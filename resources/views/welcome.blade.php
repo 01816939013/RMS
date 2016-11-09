@@ -79,12 +79,12 @@
                 </div>
 
                 <div class="links">
-                    <a href="https://laravel.com/docs">Menus</a>
-                    <a href="https://laracasts.com">Items</a>
-                    <a href="https://laravel-news.com">Meals</a>
-                    <a href="https://forge.laravel.com">Orders</a>
-                    <a href="https://github.com/laravel/laravel">Comments</a>
-                    <a href="https://github.com/laravel/laravel">Customers</a>
+                    <a href="http://localhost/RMS/public/Menus">Menus</a>
+                    <a href="http://localhost/RMS/public/Items">Items</a>
+                    <a href="http://localhost/RMS/public/Meals">Meals</a>
+                    <a href="http://localhost/RMS/public/Orders">Orders</a>
+                    <a href="http://localhost/RMS/public/Comments">Comments</a>
+                    <a href="http://localhost/RMS/public/Customers">Customers</a>
                 </div>
             </div>
         </div>

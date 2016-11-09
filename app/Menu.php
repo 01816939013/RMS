@@ -8,4 +8,8 @@ class Menu extends Model
 {
 	protected $table = 'menus';
     protected $fillable = ['title', 'type', 'description', 'status', 'image', 'user_id'];
+
+    public function user(){
+    	return $this->belongsTo('App\User');
+    }
 }
