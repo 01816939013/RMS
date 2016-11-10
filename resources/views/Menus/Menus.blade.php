@@ -15,6 +15,18 @@
         {{Session::get('deleted_menu_success')}}
         </div>
         @endif
+        @if (Session::has('updated_menu_success'))
+        <div class="alert alert-success">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        {{Session::get('updated_menu_success')}}
+        </div>
+        @endif
+        @if (Session::has('deleted_menu_faild'))
+        <div class="alert alert-danger">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        {{Session::get('deleted_menu_faild')}}
+        </div>
+        @endif
             <div class="panel panel-default">
                 <div class="panel-heading">Menus <a href="Menus/create" class="pull-right"><span class="glyphicon glyphicon-plus"></span></a></div>
 

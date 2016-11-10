@@ -128,7 +128,9 @@ class MenusController extends Controller
      */
     public function edit($id)
     {
-        //
+        $menu = Menu::findOrFail($id);
+        $errors = array();
+        return view('Menus.Edit', compact('menu','errors'));
     }
 
     /**
@@ -140,7 +142,55 @@ class MenusController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $input = $request->all();
+        $input['user_id'] = \Auth::user()->id;
+        $menu = Menu::findOrFail($id);
+        $errors = array();
+
+        if(isset($input['title'])){
+            if(empty($input['title'])){
+                $errors[0] = "Please Insert Menu Title";
+            }
+        } else {
+            $errors[0] = "Please Insert Menu Title";
+        }
+
+        if(isset($input['type'])){
+            if($input['type'] == -1){
+                $errors[1] = "Please Select Menu Type";
+            }
+        } else {
+            $errors[1] = "Please Select Menu Type";
+        }
+
+        if(isset($input['status'])){
+            if($input['status'] == -1){
+                $errors[2] = "Please Select Menu Status";
+            }
+        } else {
+            $errors[2] = "Please Select Menu Status";
+        }
+
+        if(isset($input['description'])){
+            if(empty($input['description'])){
+                $errors[3] = "Please Insert Menu Description";
+            }
+        } else {
+            $errors[3] = "Please Insert Menu Description";
+        }
+
+        if(isset($input['image'])){
+            $input['image'] = $this->upload($input['image']);
+        }
+
+        if(empty($errors)){
+            $menu->update($input);
+            $menus = Menu::paginate(7);
+            \Session::flash('updated_menu_success', 'Your Menu Updated Successfully');
+            return view('Menus.Menus', compact('menus'));
+        } else {
+            return view('Menus.Edit', compact('menu', 'errors'));
+        }
     }
 
     /**
@@ -151,8 +201,14 @@ class MenusController extends Controller
      */
     public function destroy($id)
     {
-        $menu = Menu::findOrFail($id)->delete();
-        \Session::flash('deleted_menu_success', 'Your Menu Deleted Successfully');
+        try{
+            Menu::findOrFail($id)->delete();
+            \Session::flash('deleted_menu_success', 'Your Menu Deleted Successfully');
+        }catch(\Exception $e){
+            \Session::flash('deleted_menu_faild', 'Your Menu Deleted Faild '. $e->getMessage());
+        }
+        
         return redirect()->back();
     }
+
 }
