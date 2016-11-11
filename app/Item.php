@@ -8,4 +8,12 @@ class Item extends Model
 {
     protected $table = 'items';
     protected $fillable = ['title', 'description', 'status', 'image', 'price', 'menu_id', 'user_id'];
+
+    public function user() {
+    	return $this->belongsTo('App\User');
+    }
+
+    public function menu() {
+    	return $this->belongsTo('App\Menu');
+    }
 }
