@@ -45,6 +45,12 @@
                     <a class="navbar-brand" href="{{ url('/Menus') }}">
                         Menus
                     </a>
+                    <a class="navbar-brand" href="{{ url('/Items') }}">
+                        Items
+                    </a>
+                    <a class="navbar-brand" href="{{ url('/Meals') }}">
+                        Meals
+                    </a>
                 </div>
 
                 <div class="collapse navbar-collapse" id="app-navbar-collapse">

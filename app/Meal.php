@@ -8,4 +8,9 @@ class Meal extends Model
 {
     protected $table = 'meals';
     protected $fillable = ['title', 'description', 'status', 'image', 'price', 'user_id'];
+
+    public function user() {
+    	return $this->belongsTo('App\User');
+    }
+
 }

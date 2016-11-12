@@ -93,7 +93,7 @@ class MenusController extends Controller
             Menu::create($input);
             $menus = Menu::paginate(7);
             \Session::flash('added_menu_success', 'Your Menu Added Successfully');
-            return view('Menus.Menus', compact('menus'));
+            return redirect('/Menus');
         } else {
             return view('Menus.create', compact('errors'));
         }
@@ -187,7 +187,7 @@ class MenusController extends Controller
             $menu->update($input);
             $menus = Menu::paginate(7);
             \Session::flash('updated_menu_success', 'Your Menu Updated Successfully');
-            return view('Menus.Menus', compact('menus'));
+            return redirect('/Menus');
         } else {
             return view('Menus.Edit', compact('menu', 'errors'));
         }

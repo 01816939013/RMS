@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Item;
+use App\Meal;
 use App\Menu;
-class ItemsController extends Controller
+use App\MealItem;
+use App\Item;
+class MealsController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -23,8 +25,8 @@ class ItemsController extends Controller
      */
     public function index()
     {
-        $items = Item::paginate(7);
-        return view('Items.Items', compact('items'));
+        $meals = Meal::paginate(7);
+        return view('Meals.Meals', compact('meals'));
     }
 
     /**
@@ -34,9 +36,9 @@ class ItemsController extends Controller
      */
     public function create()
     {
-        $menus = Menu::pluck('title', 'id');
         $errors = array();
-        return view('Items.Create', compact('menus', 'errors'));
+        $menus = Menu::all();
+        return view('Meals.Create', compact('errors', 'menus'));
     }
 
     /**
@@ -53,42 +55,27 @@ class ItemsController extends Controller
 
         if(isset($input['title'])){
             if(empty($input['title'])){
-                $errors[0] = "Please Insert Item Title";
+                $errors[0] = "Please Insert Meal Title";
             }
         } else {
-            $errors[0] = "Please Insert Item Title";
+            $errors[0] = "Please Insert Meal Title";
         }
 
-        if(isset($input['menu_id'])){
-            if($input['menu_id'] == -1){
-                $errors[1] = "Please Select Item Menu";
-            }
-        } else {
-            $errors[1] = "Please Select Item Menu";
-        }
 
         if(isset($input['status'])){
             if($input['status'] == -1){
-                $errors[2] = "Please Select Item Status";
+                $errors[1] = "Please Select Meal Status";
             }
         } else {
-            $errors[2] = "Please Select Item Status";
+            $errors[1] = "Please Select Meal Status";
         }
 
         if(isset($input['description'])){
             if(empty($input['description'])){
-                $errors[3] = "Please Insert Item Description";
+                $errors[2] = "Please Insert Meal Description";
             }
         } else {
-            $errors[3] = "Please Insert Item Description";
-        }
-
-        if(isset($input['price'])){
-            if(empty($input['price'])){
-                $errors[4] = "Please Insert Item Price";
-            }
-        } else {
-            $errors[4] = "Please Insert Item Price";
+            $errors[2] = "Please Insert Meal Description";
         }
 
         if(isset($input['image'])){
@@ -98,13 +85,23 @@ class ItemsController extends Controller
         }
 
         if(empty($errors)){
-            Item::create($input);
-            $items = Item::paginate(7);
-            \Session::flash('added_item_success', 'Your Item Added Successfully');
-            return redirect('/Items');
+            $menuPrice = 0;
+            foreach ($input['items'] as $item) {
+                $item = Item::findOrFail($item);
+                $menuPrice += $item->price - ($item->price * ($input['discount-'.$item->id] / 100));
+            }
+            $input['price'] = $menuPrice;
+            $meal = Meal::create($input);
+
+            foreach ($input['items'] as $item) {
+                MealItem::create(['meal_id'=>$meal->id, 'item_id'=>$item, 'discount'=>$input['discount-'.$item]]);
+            }
+
+            $meals = Meal::paginate(7);
+            \Session::flash('added_meal_success', 'Your Meal Added Successfully');
+            return redirect('/Meals');
         } else {
-            $menus = Menu::pluck('title', 'id');
-            return view('Items.create', compact('errors', 'menus'));
+            return view('Meals.create', compact('errors'));
         }
 
     }
@@ -137,10 +134,17 @@ class ItemsController extends Controller
      */
     public function edit($id)
     {
-        $item = Item::findOrFail($id);
+        $meal = Meal::findOrFail($id);
+        $mealItems = MealItem::where('meal_id', $meal->id)->get();
+
+        $itemsIDs = array();
+        foreach ($mealItems as $mealItem) {
+            $itemsIDs[] = $mealItem->item_id;
+            $itemsDiscounts[$mealItem->item_id] = $mealItem->discount;
+        }
+        $menus = Menu::all();
         $errors = array();
-        $menus = Menu::pluck('title', 'id');
-        return view('Items.Edit', compact('item', 'errors', 'menus'));
+        return view('Meals.Edit', compact('meal', 'errors', 'menus', 'itemsIDs', 'itemsDiscounts'));
     }
 
     /**
@@ -154,61 +158,50 @@ class ItemsController extends Controller
     {
         $input = $request->all();
         $input['user_id'] = \Auth::user()->id;
-        $item = Item::findOrFail($id);
+        $meal = Meal::findOrFail($id);
         $errors = array();
 
         if(isset($input['title'])){
             if(empty($input['title'])){
-                $errors[0] = "Please Insert Item Title";
+                $errors[0] = "Please Insert Meal Title";
             }
         } else {
-            $errors[0] = "Please Insert Item Title";
+            $errors[0] = "Please Insert Meal Title";
         }
 
-        if(isset($input['menu_id'])){
-            if($input['menu_id'] == -1){
-                $errors[1] = "Please Select Item Menu";
-            }
-        } else {
-            $errors[1] = "Please Select Item Menu";
-        }
 
         if(isset($input['status'])){
             if($input['status'] == -1){
-                $errors[2] = "Please Select Item Status";
+                $errors[1] = "Please Select Meal Status";
             }
         } else {
-            $errors[2] = "Please Select Item Status";
+            $errors[1] = "Please Select Meal Status";
         }
 
         if(isset($input['description'])){
             if(empty($input['description'])){
-                $errors[3] = "Please Insert Item Description";
+                $errors[2] = "Please Insert Meal Description";
             }
         } else {
-            $errors[3] = "Please Insert Item Description";
+            $errors[2] = "Please Insert Meal Description";
         }
 
-        if(isset($input['price'])){
-            if(empty($input['price'])){
-                $errors[4] = "Please Insert Item Price";
-            }
-        } else {
-            $errors[4] = "Please Insert Item Price";
-        }
 
         if(isset($input['image'])){
             $input['image'] = $this->upload($input['image']);
         }
 
         if(empty($errors)){
-            $item->update($input);
-            $items = Item::paginate(7);
-            \Session::flash('updated_item_success', 'Your Item Updated Successfully');
-            return redirect('/Items');
+            $meal->update($input);
+            MealItem::where('meal_id', $id)->delete();
+            foreach ($input['items'] as $item) {
+                MealItem::create(['meal_id'=>$id, 'item_id'=>$item, 'discount'=>$input['discount-'.$item]]);
+            }
+            $meals = Meal::paginate(7);
+            \Session::flash('updated_meal_success', 'Your Meal Updated Successfully');
+            return redirect('/Meals');
         } else {
-            $menus = Menu::pluck('title', 'id');
-            return view('Items.Edit', compact('errors', 'menus', 'item'));
+            return view('Meals.Edit', compact('errors', 'meal'));
         }
     }
 
@@ -221,10 +214,12 @@ class ItemsController extends Controller
     public function destroy($id)
     {
         try{
-            Item::findOrFail($id)->delete();
-            \Session::flash('deleted_item_success', 'Your Item Deleted Successfully');
+            $meal = Meal::findOrFail($id);
+            MealItem::where('meal_id', $meal->id)->delete();
+            $meal->delete();
+            \Session::flash('deleted_meal_success', 'Your Meal Deleted Successfully');
         }catch(\Exception $e){
-            \Session::flash('deleted_item_faild', 'Your Item Deleted Faild '. $e->getMessage());
+            \Session::flash('deleted_meal_faild', 'Your Meal Deleted Faild '. $e->getMessage());
         }
         
         return redirect()->back();

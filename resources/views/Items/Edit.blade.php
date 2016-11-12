@@ -27,7 +27,7 @@
                     </div>
                     <div class="col-md-4">
                     <p class="error">@if (isset($errors[4])){{$errors[4]}} @endif</p>
-                        {!! Form::number('price', null, array('class'=>'form-control', 'placeholder'=>'Item Price')) !!}
+                        {!! Form::number('price', null, array('step'=>'any' ,'class'=>'form-control', 'placeholder'=>'Item Price')) !!}
                     </div>
                     <div class="col-md-4 form-group"> 
                     <p></p>
