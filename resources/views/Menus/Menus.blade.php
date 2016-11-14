@@ -4,29 +4,17 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-        @if (Session::has('added_menu_success'))
-        <div class="alert alert-success">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>{{Session::get('added_menu_success')}}</div>
-        @endif
+            @if (Session::has('success_message'))
+            <div class="alert alert-success alert-important">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>{{session('success_message')}}</div>
+            @endif
 
-        @if (Session::has('deleted_menu_success'))
-        <div class="alert alert-success">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        {{Session::get('deleted_menu_success')}}
-        </div>
-        @endif
-        @if (Session::has('updated_menu_success'))
-        <div class="alert alert-success">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        {{Session::get('updated_menu_success')}}
-        </div>
-        @endif
-        @if (Session::has('deleted_menu_faild'))
-        <div class="alert alert-danger">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        {{Session::get('deleted_menu_faild')}}
-        </div>
-        @endif
+            @if (Session::has('error_message'))
+            <div class="alert alert-danger alert-important">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{session('error_message')}}
+            </div>
+            @endif
             <div class="panel panel-default">
                 <div class="panel-heading">Menus <a href="Menus/create" class="pull-right"><span class="glyphicon glyphicon-plus"></span></a></div>
 
@@ -53,9 +41,9 @@
                             <td><img src="{{$menu->image}}" class="img-responsive image_menu" width="100" height="200"></td>
                             <td>{{$menu->user->name}}</td>
                             <td>
-                            {!! Form::open(['method'=>'DELETE', 'route'=>['Menus.destroy', $menu->id]]) !!}
-                            {!! Form::submit('X', ['class'=>'btn btn-danger']) !!}
-                            {!! Form::close() !!}
+                                {!! Form::open(['method'=>'DELETE', 'route'=>['Menus.destroy', $menu->id]]) !!}
+                                {!! Form::submit('X', ['class'=>'btn btn-danger']) !!}
+                                {!! Form::close() !!}
                             </td>
                             <td><a href="Menus/{{$menu->id}}/edit"><span class="glyphicon glyphicon-edit"></span></a></td>
                         </tr>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Menu;
+use Session;
 class MenusController extends Controller
 {
 
@@ -90,10 +91,15 @@ class MenusController extends Controller
         }
 
         if(empty($errors)){
-            Menu::create($input);
-            $menus = Menu::paginate(7);
-            \Session::flash('added_menu_success', 'Your Menu Added Successfully');
-            return redirect('/Menus');
+            try{
+                Menu::create($input);
+                $menus = Menu::paginate(7);
+                // \Session::flash('added_menu_success', 'Your Menu Added Successfully');
+                //session()->flash('success_message', 'Your Menu Added Successfully');
+                return redirect('/Menus')->with(['success_message' => 'Your Menu Added Successfully']);
+            } catch(\Exception $e) {
+                session()->flash('error_message', 'Added Menu Exception '.$e->getMessage());
+            }
         } else {
             return view('Menus.create', compact('errors'));
         }
@@ -186,8 +192,9 @@ class MenusController extends Controller
         if(empty($errors)){
             $menu->update($input);
             $menus = Menu::paginate(7);
-            \Session::flash('updated_menu_success', 'Your Menu Updated Successfully');
-            return redirect('/Menus');
+            // \Session::flash('updated_menu_success', 'Your Menu Updated Successfully');
+            //session()->flash('success_message', 'Your Menu Updated Successfully');
+            return redirect('/Menus')->with(['success_message' => 'Your Menu Updated Successfully']);;
         } else {
             return view('Menus.Edit', compact('menu', 'errors'));
         }
@@ -203,9 +210,11 @@ class MenusController extends Controller
     {
         try{
             Menu::findOrFail($id)->delete();
-            \Session::flash('deleted_menu_success', 'Your Menu Deleted Successfully');
+            // \Session::flash('deleted_menu_success', 'Your Menu Deleted Successfully');
+            session()->flash('success_message', 'Your Menu Deleted Successfully');
         }catch(\Exception $e){
-            \Session::flash('deleted_menu_faild', 'Your Menu Deleted Faild '. $e->getMessage());
+            // \Session::flash('deleted_menu_faild', 'Your Menu Deleted Faild '. $e->getMessage());
+            session()->flash('error_message', 'Your Menu Deleted Faild '. $e->getMessage());
         }
         
         return redirect()->back();

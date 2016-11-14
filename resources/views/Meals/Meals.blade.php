@@ -4,29 +4,17 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-        @if (Session::has('added_meal_success'))
-        <div class="alert alert-success">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>{{Session::get('added_meal_success')}}</div>
-        @endif
+            @if (Session::has('success_message'))
+            <div class="alert alert-success alert-important">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>{{session('success_message')}}</div>
+            @endif
 
-        @if (Session::has('deleted_meal_success'))
-        <div class="alert alert-success">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        {{Session::get('deleted_meal_success')}}
-        </div>
-        @endif
-        @if (Session::has('updated_meal_success'))
-        <div class="alert alert-success">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        {{Session::get('updated_meal_success')}}
-        </div>
-        @endif
-        @if (Session::has('deleted_meal_faild'))
-        <div class="alert alert-danger">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        {{Session::get('deleted_meal_faild')}}
-        </div>
-        @endif
+            @if (Session::has('error_message'))
+            <div class="alert alert-danger alert-important">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{session('error_message')}}
+            </div>
+            @endif
             <div class="panel panel-default">
                 <div class="panel-heading">Meals <a href="Meals/create" class="pull-right"><span class="glyphicon glyphicon-plus"></span></a></div>
 

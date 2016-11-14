@@ -7,6 +7,7 @@ use App\Meal;
 use App\Menu;
 use App\MealItem;
 use App\Item;
+use Session;
 class MealsController extends Controller
 {
     /**
@@ -91,14 +92,19 @@ class MealsController extends Controller
                 $menuPrice += $item->price - ($item->price * ($input['discount-'.$item->id] / 100));
             }
             $input['price'] = $menuPrice;
-            $meal = Meal::create($input);
+            try{
+                $meal = Meal::create($input);
 
-            foreach ($input['items'] as $item) {
-                MealItem::create(['meal_id'=>$meal->id, 'item_id'=>$item, 'discount'=>$input['discount-'.$item]]);
+                foreach ($input['items'] as $item) {
+                    MealItem::create(['meal_id'=>$meal->id, 'item_id'=>$item, 'discount'=>$input['discount-'.$item]]);
+                }
+            } catch(\Exception $e){
+                session()->flash('error_message', 'Meal Added Errors :'.$e->getMessage());
             }
 
             $meals = Meal::paginate(7);
-            \Session::flash('added_meal_success', 'Your Meal Added Successfully');
+            //\Session::flash('added_meal_success', 'Your Meal Added Successfully');
+            session()->flash('success_message', 'Your Meal Added Successfully');
             return redirect('/Meals');
         } else {
             return view('Meals.create', compact('errors'));
@@ -198,7 +204,8 @@ class MealsController extends Controller
                 MealItem::create(['meal_id'=>$id, 'item_id'=>$item, 'discount'=>$input['discount-'.$item]]);
             }
             $meals = Meal::paginate(7);
-            \Session::flash('updated_meal_success', 'Your Meal Updated Successfully');
+            //\Session::flash('updated_meal_success', 'Your Meal Updated Successfully');
+            session()->flash('success_message', 'Your Meal Updated Successfully');
             return redirect('/Meals');
         } else {
             return view('Meals.Edit', compact('errors', 'meal'));
@@ -217,9 +224,11 @@ class MealsController extends Controller
             $meal = Meal::findOrFail($id);
             MealItem::where('meal_id', $meal->id)->delete();
             $meal->delete();
-            \Session::flash('deleted_meal_success', 'Your Meal Deleted Successfully');
+            // \Session::flash('deleted_meal_success', 'Your Meal Deleted Successfully');
+            session()->flash('success_message', 'Your Meal Deleted Successfully');
         }catch(\Exception $e){
-            \Session::flash('deleted_meal_faild', 'Your Meal Deleted Faild '. $e->getMessage());
+            // \Session::flash('deleted_meal_faild', 'Your Meal Deleted Faild '. $e->getMessage());
+            session()->flash('error_message', 'Your Meal Deleted Faild '. $e->getMessage());
         }
         
         return redirect()->back();

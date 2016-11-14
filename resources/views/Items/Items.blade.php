@@ -4,29 +4,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-        @if (Session::has('added_item_success'))
-        <div class="alert alert-success">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>{{Session::get('added_item_success')}}</div>
-        @endif
-
-        @if (Session::has('deleted_item_success'))
-        <div class="alert alert-success">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        {{Session::get('deleted_item_success')}}
-        </div>
-        @endif
-        @if (Session::has('updated_item_success'))
-        <div class="alert alert-success">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        {{Session::get('updated_item_success')}}
-        </div>
-        @endif
-        @if (Session::has('deleted_item_faild'))
-        <div class="alert alert-danger">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        {{Session::get('deleted_item_faild')}}
-        </div>
-        @endif
+        @include('flash::message')
             <div class="panel panel-default">
                 <div class="panel-heading">Items <a href="Items/create" class="pull-right"><span class="glyphicon glyphicon-plus"></span></a></div>
 
@@ -55,9 +33,9 @@
                             <td><img src="{{$item->image}}" class="img-responsive image_menu" width="100" height="200"></td>
                             <td>{{$item->user->name}}</td>
                             <td>
-                            {!! Form::open(['method'=>'DELETE', 'route'=>['Items.destroy', $item->id]]) !!}
-                            {!! Form::submit('X', ['class'=>'btn btn-danger']) !!}
-                            {!! Form::close() !!}
+                                {!! Form::open(['method'=>'DELETE', 'route'=>['Items.destroy', $item->id]]) !!}
+                                {!! Form::submit('X', ['class'=>'btn btn-danger']) !!}
+                                {!! Form::close() !!}
                             </td>
                             <td><a href="Items/{{$item->id}}/edit"><span class="glyphicon glyphicon-edit"></span></a></td>
                         </tr>
