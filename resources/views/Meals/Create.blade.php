@@ -26,7 +26,9 @@
                     <p class="error">@if (isset($errors[2])){{$errors[2]}} @endif</p>
                         {!! Form::textarea('description', null, array('class'=>'form-control', 'placeholder'=>'Meal Description:')) !!}
                     </div>
+                    <div class="clearfix"></div>
                     <div class="form-group">
+                    <p class="error">@if (isset($errors[3])){{$errors[3]}} @endif</p>
                         @foreach($menus as $menu)
                             @if(count($menu->items) > 0)
                                 <h4>{{$menu->title}}</h4>

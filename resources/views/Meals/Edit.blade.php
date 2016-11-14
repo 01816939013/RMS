@@ -27,6 +27,7 @@
                     </div>
                     <div class="clearfix"></div>
                     <div class="form-group">
+                    <p class="error">@if (isset($errors[3])){{$errors[3]}} @endif</p>
                         @foreach($menus as $menu)
                             @if(count($menu->items) > 0)
                                 <h4>{{$menu->title}}</h4>

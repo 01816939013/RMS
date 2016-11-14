@@ -79,6 +79,10 @@ class MealsController extends Controller
             $errors[2] = "Please Insert Meal Description";
         }
 
+        if(!isset($input['items'])){
+            $errors[3] = "Please Select One Item At Least";
+        }
+
         if(isset($input['image'])){
             $input['image'] = $this->upload($input['image']);
         } else {
@@ -94,20 +98,20 @@ class MealsController extends Controller
             $input['price'] = $menuPrice;
             try{
                 $meal = Meal::create($input);
-
                 foreach ($input['items'] as $item) {
                     MealItem::create(['meal_id'=>$meal->id, 'item_id'=>$item, 'discount'=>$input['discount-'.$item]]);
                 }
             } catch(\Exception $e){
-                session()->flash('error_message', 'Meal Added Errors :'.$e->getMessage());
+                flash()->error('Meal Added Errors :'.$e->getMessage());
             }
 
             $meals = Meal::paginate(7);
             //\Session::flash('added_meal_success', 'Your Meal Added Successfully');
-            session()->flash('success_message', 'Your Meal Added Successfully');
+            flash()->overlay('Your Meal Added Successfully', 'Good Work');
             return redirect('/Meals');
         } else {
-            return view('Meals.create', compact('errors'));
+            $menus = Menu::all();
+            return view('Meals.create', compact('errors', 'menus'));
         }
 
     }
@@ -193,22 +197,31 @@ class MealsController extends Controller
         }
 
 
+        if(!isset($input['items'])){
+            $errors[3] = "Please Select One Item At Least";
+        }
+
         if(isset($input['image'])){
             $input['image'] = $this->upload($input['image']);
         }
 
         if(empty($errors)){
-            $meal->update($input);
-            MealItem::where('meal_id', $id)->delete();
-            foreach ($input['items'] as $item) {
-                MealItem::create(['meal_id'=>$id, 'item_id'=>$item, 'discount'=>$input['discount-'.$item]]);
+            try{
+                $meal->update($input);
+                MealItem::where('meal_id', $id)->delete();
+                foreach ($input['items'] as $item) {
+                    MealItem::create(['meal_id'=>$id, 'item_id'=>$item, 'discount'=>$input['discount-'.$item]]);
+                }
+                $meals = Meal::paginate(7);
+                flash()->overlay('Your Meal Updated Successfully', 'Good Work'); // dispaly as javascript alert 
+                return redirect('/Meals');
+            }catch(\Exception $e) {
+                flash()->error('Updated Meal Exception '.$e->getMessage());
             }
-            $meals = Meal::paginate(7);
-            //\Session::flash('updated_meal_success', 'Your Meal Updated Successfully');
-            session()->flash('success_message', 'Your Meal Updated Successfully');
-            return redirect('/Meals');
         } else {
-            return view('Meals.Edit', compact('errors', 'meal'));
+            $menus = Menu::all();
+            $itemsIDs = array();
+            return view('Meals.Edit', compact('errors', 'meal', 'menus', 'itemsIDs'));
         }
     }
 
@@ -225,10 +238,10 @@ class MealsController extends Controller
             MealItem::where('meal_id', $meal->id)->delete();
             $meal->delete();
             // \Session::flash('deleted_meal_success', 'Your Meal Deleted Successfully');
-            session()->flash('success_message', 'Your Meal Deleted Successfully');
+            flash()->overlay('Your Meal Deleted Successfully', 'Good Work');
         }catch(\Exception $e){
             // \Session::flash('deleted_meal_faild', 'Your Meal Deleted Faild '. $e->getMessage());
-            session()->flash('error_message', 'Your Meal Deleted Faild '. $e->getMessage());
+            flash()->error('Your Meal Deleted Faild '. $e->getMessage());
         }
         
         return redirect()->back();

@@ -94,7 +94,8 @@
     <!-- Scripts -->
     <script src="{{asset('js\app.js')}}"></script>
     <script>
-         $('div.alert').not('.alert-important').delay(4000).slideUp(300);
+        // $('div.alert').not('.alert-important').delay(4000).slideUp(300);
+         $('#flash-overlay-modal').modal();
     </script>
 </body>
 </html>
