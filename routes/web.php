@@ -21,3 +21,4 @@ Route::get('/home', 'HomeController@index');
 Route::resource('/Menus', 'MenusController');
 Route::resource('/Items', 'ItemsController');
 Route::resource('/Meals', 'MealsController');
+Route::resource('/Orders', 'OrdersController');

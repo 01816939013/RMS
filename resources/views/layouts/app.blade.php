@@ -89,7 +89,15 @@
                 </div>
             </div>
         </nav>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    @include('flash::message')
+                </div>
+            </div>
+        </div>
         @yield('content')
+        
     </div>
     <!-- Scripts -->
     <script src="{{asset('js\app.js')}}"></script>

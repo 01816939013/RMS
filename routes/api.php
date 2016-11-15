@@ -16,3 +16,8 @@ use Illuminate\Http\Request;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:api');
+
+Route::group(array('prefix' => 'api/v1', 'before' => 'auth:api'), function()
+{
+    Route::resource('meals', 'MealsController');
+});

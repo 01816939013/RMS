@@ -8,4 +8,8 @@ class Order extends Model
 {
     protected $table = 'orders';
     protected $fillable = ['total', 'status', 'cahIn', 'payment', 'change', 'customer_id'];
+
+    public function customer(){
+    	return $this->belongsTo('App\Customer');
+    }
 }
