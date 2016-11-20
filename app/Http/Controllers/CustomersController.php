@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Validator;
 use Illuminate\Http\Request;
 use App\Customer;
 class CustomersController extends Controller
@@ -24,6 +24,24 @@ class CustomersController extends Controller
         $customers = Customer::paginate(7);
         return view('Customers.Customers', compact('customers'));
     }
+    
+    /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'name' => 'required|max:255',
+            'email' => 'required|email|max:255|unique:customers',
+            'password' => 'required|min:6|confirmed',
+            'address' => 'required',
+            'city' => 'required',
+            'phone' => 'required|min:11|unique:customers',
+        ]);
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -32,7 +50,7 @@ class CustomersController extends Controller
      */
     public function create()
     {
-        //
+        return view('Customers.Create');
     }
 
     /**

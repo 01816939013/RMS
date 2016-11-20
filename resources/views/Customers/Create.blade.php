@@ -5,35 +5,35 @@
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
-                <div class="panel-heading">Create New Item</div>
+                <div class="panel-heading">Create New Customer</div>
 
                 <div class="panel-body">
-                    {!! Form::open(array('route'=>'Items.store','files'=>true)) !!}
-                    <div class="col-md-4 form-group"> 
-                        <p class="error">@if (isset($errors[0])){{$errors[0]}} @endif</p>
-                        {!! Form::text('title', null, array('class'=>'form-control', 'placeholder'=>'Item Title:')) !!}
+                    {!! Form::open(array('route'=>'Customers.store')) !!}
+                    <div class="col-md-6 form-group"> 
+                        <p class="error">@if ($errors->has('name')) {{ $errors->first('name') }} @endif</p>
+                        {!! Form::text('name', null, array('class'=>'form-control', 'placeholder'=>'Customer Name:')) !!}
                     </div>
-                    <div class="col-md-4 form-group"> 
-                        <p class="error">@if (isset($errors[1])){{$errors[1]}} @endif</p>
-                        {!! Form::select('menu_id', $menus, null, array('class'=>'form-control', 'placeholder'=>'Choose Item Menu')) !!}
+                    <div class="col-md-6 form-group"> 
+                        <p class="error">@if ($errors->has('email')) {{ $errors->first('email') }} @endif</p>
+                        {!! Form::email('email', null, array('class'=>'form-control', 'placeholder'=>'Customer Email:')) !!}
                     </div>
-                    <div class="col-md-4 form-group"> 
-                        <p class="error">@if (isset($errors[2])){{$errors[2]}} @endif</p>
-                        {!! Form::select('status',[-1=>'Item Status', 1=>'Active',0=>'inActive'], null, array( 'class'=>'form-control')) !!}
+                    <div class="col-md-6 form-group"> 
+                        <p class="error">@if ($errors->has('password')) {{ $errors->first('password') }} @endif</p>
+                        {!! Form::password('password',array('class'=>'form-control')) !!}
                     </div>
-                    <div class="col-md-12 form-group"> 
-                        <p class="error">@if (isset($errors[3])){{$errors[3]}} @endif</p>
-                        {!! Form::textarea('description', null, array('class'=>'form-control', 'placeholder'=>'Item Description:')) !!}
+                    <div class="col-md-6 form-group"> 
+                        <p class="error">@if ($errors->has('address')) {{ $errors->first('address') }} @endif</p>
+                        {!! Form::text('address', null, array('class'=>'form-control', 'placeholder'=>'Customer Address:')) !!}
                     </div>
-                    <div class="col-md-4">
-                        <p class="error">@if (isset($errors[4])){{$errors[4]}} @endif</p>
-                        {!! Form::number('price', null, array('step'=>'any' ,'class'=>'form-control', 'placeholder'=>'Item Price')) !!}
+                    <div class="col-md-6 form-group"> 
+                        <p class="error">@if ($errors->has('city')) {{ $errors->first('city') }} @endif</p>
+                        {!! Form::text('city', null, array('class'=>'form-control', 'placeholder'=>'City:')) !!}
                     </div>
-                    <div class="col-md-4 form-group"> 
-                        <p></p>
-                        {!! Form::file('image', array('class'=>'form-control', 'placeholder'=>'Item Picture')) !!}
+                    <div class="col-md-6 form-group"> 
+                        <p class="error">@if ($errors->has('phone')) {{ $errors->first('phone') }} @endif</p>
+                        {!! Form::number('phone', null, array('class'=>'form-control', 'placeholder'=>'Customer Phone:')) !!}
                     </div>
-                    <div class="col-md-4 form-group"> 
+                    <div class="col-md-6 form-group"> 
                         {!! Form::submit('Add', ['class'=>'btn btn-primary']) !!}
                     </div>
                     {!! Form::close() !!}
