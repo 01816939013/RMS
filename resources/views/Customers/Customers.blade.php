@@ -7,7 +7,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Customers <a href="Customers/create" class="pull-right"><span class="glyphicon glyphicon-plus"></span></a></div>
 
-                <div class="panel-body">
+                <div class="panel-body table-responsive">
                     <table class="table table-bordered table-hover">
                         <tr>
                             <th>ID</th>
