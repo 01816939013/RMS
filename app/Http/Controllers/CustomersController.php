@@ -83,7 +83,7 @@ class CustomersController extends Controller
      */
     public function edit($id)
     {
-        $customer = Customers::findOrFail($id);
+        $customer = Customer::findOrFail($id);
         return view('Customers.Edit', compact('customer'));
     }
 
@@ -96,6 +96,32 @@ class CustomersController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $input = $request->all();
+        $customer = Customer::findOrFail($id);
+        if(isset($input['password'])){
+           if($input['password'] == null || empty($input['password'])){
+             $input['password'] = $customer->password;
+           }
+         } else {
+           $input['password'] = $customer->password;
+         }
+        $this->validate($request, [
+          'name' => 'required|max:255',
+          'email' => 'required|email|max:255|unique:customers,email,'.$id,
+          'password' => 'min:6|confirmed',
+          'address' => 'required',
+          'city' => 'required',
+          'phone' => 'required|min:11|unique:customers,phone,'.$id,
+        ]);
+
+        try {
+            $customer->update($input);
+            flash()->overlay('Customer Updated Successfully', 'Good Work');
+            $customers = Customer::paginate(7);
+            return view('Customers.Customers', compact('customers'));
+        } catch (\Exception $e) {
+            flash()->error('Customer Updated Error: '.$e->getMessage());
+        }
 
     }
 
